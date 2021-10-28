@@ -1,5 +1,7 @@
 # Huawei E3372h-320 console client
-client for E3372h-320 (CL4E3372HM)
+ E3372h-320 (CL4E3372HM)
+
+[![Node.js 10.x, 12.x, 13.x, 14.x, 15.x CI](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml/badge.svg)](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml)
 
 ![](./docs/4889330.jpg)
 ![](./docs/4889332.jpg)
