@@ -1,4 +1,4 @@
-import parser from 'xml2json';
+import parser from 'xml2js';
 
 import {restCalls} from "./utils/DefaultRestCalls";
 
@@ -29,7 +29,7 @@ type SessionData0 = {
 //
 async function getSessionId(url: string): Promise<SessionData0> {
   const resp = await restCalls.fetchData(`http://${url}/api/webserver/SesTokInfo`, 'GET');
-  const message = JSON.parse(parser.toJson(resp));
+  const message = await parser.parseStringPromise(resp);
   return message.response;
 }
 //

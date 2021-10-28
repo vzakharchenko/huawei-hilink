@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const {restCalls} = require("../src/utils/DefaultRestCalls");
-const parser = require('xml2json');
+const parser = require('xml2js');
 const CryptoJS = require('crypto-js');
 const {RSAKey} = require('./rsa');
 
@@ -107,7 +107,7 @@ async function getPublicKey(session){
         'cookie': `sessionId=${session.SesInfo}`,
         __RequestVerificationToken: session.TokInfo
     });
-    const message = JSON.parse(parser.toJson(resp));
+    const message = await parser.parseStringPromise(resp);
     return message.response;
 }
 

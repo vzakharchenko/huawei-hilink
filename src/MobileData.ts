@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import parser from "xml2json";
+import parser from "xml2js";
 
 import {SessionData} from "./startSession";
 import {restCalls} from "./utils/DefaultRestCalls";
@@ -19,10 +19,9 @@ export async function controlMobileData(sessionData: SessionData, mobileStatus: 
     __RequestVerificationToken: sessionData.TokInfo,
     Cookie: `SessionId=${sessionData.SesInfo}`,
   });
-  const text = parser.toJson(resp);
-  const json = JSON.parse(text);
+  const json = await parser.parseStringPromise(resp);
   if (json.response !== 'OK') {
-    throw new Error(`Control Mobile Data error: ${text}`);
+    throw new Error(`Control Mobile Data error: ${JSON.stringify(json)}`);
   }
   console.log(`Control Mobile Data changed to ${mobileStatus}`);
 }
@@ -33,10 +32,9 @@ export async function reconnect(sessionData: SessionData) {
     __RequestVerificationToken: sessionData.TokInfo,
     Cookie: `SessionId=${sessionData.SesInfo}`,
   });
-  const text = parser.toJson(resp);
-  const json = JSON.parse(text);
+  const json = await parser.parseStringPromise(resp);
   if (json.response !== 'OK') {
-    throw new Error(`Reconnecting error: ${text}`);
+    throw new Error(`Reconnecting error: ${JSON.stringify(json)}`);
   }
   console.log('Reconnected');
 }
@@ -52,11 +50,10 @@ export async function status(sessionData: SessionData, exportFile: string,
       await saveFile(exportFile, resp);
       console.info(`xml file ${exportFile} created`);
     } else if (exportFormat === 'json') {
-      await saveFile(exportFile, parser.toJson(resp));
+      await saveFile(exportFile, JSON.stringify(await parser.parseStringPromise(resp)));
       console.info(`json file ${exportFile} created`);
     } else {
-      const text = parser.toJson(resp);
-      const json = JSON.parse(text);
+      const json = await parser.parseStringPromise(resp);
       const response = json.response;
       Object.keys(response).forEach((key) => {
         console.info(`${key}=${response[key]}`);
