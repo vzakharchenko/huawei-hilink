@@ -15,7 +15,7 @@ Web UI version WEBUI 11.0.1.1(W13SP2C7201)
 ![](./docs/info2.png)
 
 ## Requirement
- - nodejs (>11)
+ - nodejs (>12)
 ## Installation
 - install package
 ```
