@@ -17,7 +17,7 @@ Web UI version WEBUI 11.0.1.1(W13SP2C7201)
 ## Installation
 - install package
 ```
-npm i e3372h-320-cli -g
+sudo npm i e3372h-320-cli -g
 ```
 
 # Docker installation
