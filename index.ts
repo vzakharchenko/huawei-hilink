@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 import {startSession} from "./src/startSession";
 import {
-    deleteMessage,
+    deleteMessage, getInBoxSMS,
     getContactSMSPages,
     getSMSByUsers,
     getSMSContacts,
@@ -64,6 +64,35 @@ yargs(hideBin(process.argv))
         }
     }
     await getSMSContacts(sessionData, argv.page, argv.exportFile, argv.exportFormat);
+}).command('messages', 'get all messages from InBox', (yargs) => {
+    return yargs
+        .positional('url', {
+            describe: 'huawei host',
+            default: '192.168.8.1'
+        }).positional('deleteAfter', {
+            describe: 'delete all messages after reading ',
+            default: false
+        }).positional('exportFile', {
+            describe: 'export to file',
+            default: './inbox.list'
+        }).positional('exportFormat', {
+            describe: 'export format (xml, json, none)',
+            default: 'none'
+        })
+}, async (argv) => {
+    const sessionData = await startSession(argv.url);
+    switch (argv.exportFormat) {
+        case 'json': {
+            break;
+        }
+        case 'none': {
+            break;
+        }
+        default: {
+            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: json,none`)
+        }
+    }
+    await getInBoxSMS(sessionData, argv.deleteAfter, argv.exportFile, argv.exportFormat);
 }).command('contactPages', 'contact list pages', (yargs) => {
     return yargs
         .positional('url', {
@@ -184,7 +213,7 @@ yargs(hideBin(process.argv))
         throw new Error('messageId is not defined');
     }
     await deleteMessage(sessionData, argv.messageId);
-}).command('mobileData', 'Enable/Disable or Reconnect Mobile Data', (yargs) => {
+}).command('mobileData', 'Enable/Disable or Reconnect Mobile Data', (yargs:any) => {
     return yargs
         .positional('url', {
             describe: 'huawei host',
@@ -192,7 +221,7 @@ yargs(hideBin(process.argv))
         }).positional('mode', {
             describe: 'change mobile data to on,off or reconnect',
         })
-}, async (argv) => {
+}, async (argv:any) => {
     const sessionData = await startSession(argv.url);
     switch (argv.mode) {
         case 'reconnect': {
@@ -210,7 +239,7 @@ yargs(hideBin(process.argv))
         }
     }
     await controlMobileData(sessionData, argv.mode);
-}).command('monitoring', 'current Monitoring status', (yargs) => {
+}).command('monitoring', 'current Monitoring status', (yargs:any) => {
 // @ts-ignore
     return yargs
         .positional('url', {
@@ -223,7 +252,7 @@ yargs(hideBin(process.argv))
             describe: 'export format (xml, json, none)',
             default: 'none'
         })
-}, async (argv) => {
+}, async (argv:any) => {
     const sessionData = await startSession(argv.url);
     switch (argv.exportFormat) {
         case 'json': {

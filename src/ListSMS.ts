@@ -17,26 +17,26 @@ export async function getSMSByUsers(sessionData: SessionData,
                                     pageindex: number,
                                     exportFile: string,
                                     exportFormat: ExportFormat,
-                                    deleteAfter: boolean) {
+                                    deleteAfter: boolean): Promise<any> {
   const number = await getSMSPages(sessionData, '', 'hide');
-  const messages:any[] = [];
+  const messages: any[] = [];
   for (let i = 1; i <= number; i++) {
     const newMessages = await getSMSContacts(sessionData, 1, '', 'hide');
     if (newMessages) {
-      newMessages.forEach((m:any) => {
+      newMessages.forEach((m: any) => {
         messages.push(m);
       });
     }
   }
   if (!messages) {
     console.log(`contact ${phone} does not have messages`);
-    return;
+    return null;
   }
-  if (!messages.find((message:any) => {
+  if (!messages.find((message: any) => {
     return message.phone[0] === phone;
   })) {
     console.log(`contact ${phone} does not have messages`);
-    return;
+    return null;
   }
   const sessionData0 = await startSession(sessionData.url);
   const scram = huawei.CryptoJS.SCRAM();
@@ -52,22 +52,6 @@ export async function getSMSByUsers(sessionData: SessionData,
   });
   const pwdret = await parser.parseStringPromise((resp));
   const ret = huawei.dataDecrypt(scram, smsNonce, smsSalt, nonceStr, pwdret);
-
-  if (exportFormat !== 'hide') {
-    if (exportFormat === 'xml') {
-      await saveFile(exportFile, ret);
-      console.info(`xml file ${exportFile} created`);
-    } else if (exportFormat === 'json') {
-      await saveFile(exportFile, JSON.stringify(await parser.parseStringPromise(ret)));
-      console.info(`json file ${exportFile} created`);
-    } else {
-      const json = await parser.parseStringPromise(ret);
-      json.response.messages[0].message.forEach((message: any) => {
-        console.log(`MessageId: ${message.index[0]} Phone: ${message.phone[0]} Message: ${JSON.stringify(message.content[0])}`);
-      });
-    }
-  }
-
   if (deleteAfter) {
     const json = await parser.parseStringPromise(ret);
     const messages0 = json.response.messages[0].message;
@@ -75,6 +59,21 @@ export async function getSMSByUsers(sessionData: SessionData,
       await deleteMessage(sessionData, messages0[i].index[0]);
     }
   }
+  const json = await parser.parseStringPromise(ret);
+  if (exportFormat !== 'hide') {
+    if (exportFormat === 'xml') {
+      await saveFile(exportFile, ret);
+      console.info(`xml file ${exportFile} created`);
+    } else if (exportFormat === 'json') {
+      await saveFile(exportFile, JSON.stringify(json));
+      console.info(`json file ${exportFile} created`);
+    } else {
+      json.response.messages[0].message.forEach((message: any) => {
+        console.log(`MessageId: ${message.index[0]} Phone: ${message.phone[0]} Message: ${JSON.stringify(message.content[0])}`);
+      });
+    }
+  }
+  return json.response.messages[0].message;
 }
 
 export async function getContactSMSPages(sessionData: SessionData,
@@ -110,7 +109,10 @@ export async function getContactSMSPages(sessionData: SessionData,
 export async function getSMSPages(sessionData: SessionData,
                                   exportFile: string,
                                   exportFormat: ExportFormat) {
-  const resp = await restCalls.fetchData(`http://${sessionData.url}/api/sms/sms-count`, 'GET');
+  const resp = await restCalls.fetchData(`http://${sessionData.url}/api/sms/sms-count`, 'GET', {
+    __RequestVerificationToken: sessionData.TokInfo,
+    Cookie: `SessionId=${sessionData.SesInfo}`,
+  });
   const json = await parser.parseStringPromise(resp);
   const number = Math.floor((json.response.LocalInbox[0] + json.response.LocalOutbox[0]) / 21);
   if (exportFormat !== 'hide') {
@@ -164,15 +166,49 @@ export async function sendMessage(sessionData: SessionData,
 }
 
 
-export async function getSMSContacts(sessionData: SessionData,
+export async function getInBoxSMS(sessionData: SessionData,
+                                  deleteAfter: boolean,
+                                  exportFile: string,
+                                  exportFormat: ExportFormat): Promise<any> {
+  const contacts = await getSMSContacts(sessionData, 1, '', 'hide');
+  const messages: any[] = [];
+  if (contacts) {
+    for (let i = 0; i < contacts.length; i++) {
+      const phone = contacts[i].phone[0];
+      const phoneMessages = await getSMSByUsers(sessionData, phone, 1, '', 'hide', deleteAfter);
+      if (phoneMessages) {
+        phoneMessages.filter((pm: any) => {
+          return pm.curbox[0] === "0";
+        }).forEach((pm: any) => {
+          messages.push(pm);
+        });
+      }
+    }
+    if (exportFormat !== 'hide') {
+      if (exportFormat === 'json') {
+        await saveFile(exportFile, JSON.stringify(messages));
+        console.info(`json file ${exportFile} created`);
+      } else {
+        messages.forEach((message: any) => {
+          console.log(`MessageId: ${message.index[0]} Phone: ${message.phone[0]} lastMessage: ${JSON.stringify(message.content[0])}`);
+        });
+      }
+
+    }
+
+  }
+}
+
+export async function getSMSContacts(sessionData0: SessionData,
                                      pageindex: number,
                                      exportFile: string,
-                                     exportFormat: ExportFormat):Promise<any> {
-  const count = await getSMSPages(sessionData, '', 'hide');
+                                     exportFormat: ExportFormat): Promise<any> {
+  const count = await getSMSPages(sessionData0, '', 'hide');
   if (count === 0) {
     console.log('huawei does not have contacts');
     return null;
   }
+  const sessionData = await startSession(sessionData0.url);
   const scram = huawei.CryptoJS.SCRAM();
   const smsNonce = scram.nonce().toString();
   const smsSalt = scram.nonce().toString();
