@@ -1,5 +1,5 @@
-# Huawei E3372h-320 console client
- E3372h-320 (CL4E3372HM)
+# Huawei E3372h-320 cli
+ Control Huawei E3372h-320 (CL4E3372HM) from /bin/bash
 
 [![Node.js 10.x, 12.x, 13.x, 14.x, 15.x CI](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml/badge.svg)](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml)
 
@@ -117,7 +117,7 @@ Options:
 
 - Example get all contacts
 ```
-./e3372h_320 contacts
+e3372h_320 contacts
 ```
 Result:
 ```
@@ -165,7 +165,7 @@ Result:
 
 - Example get all contacts and export as json
 ```
-./e3372h_320 contacts --exportFormat=json --exportFile='./contacts.json'
+e3372h_320 contacts --exportFormat=json --exportFile='./contacts.json'
 cat ./contacts.json
 ```
 Result:
@@ -240,7 +240,7 @@ Options:
 
 - Example get conversation for phone +111111111111
 ```
-./e3372h_320 sms --phone=+111111111111
+e3372h_320 sms --phone=+111111111111
 ```
 Result:
 ```
@@ -253,7 +253,7 @@ MessageId: 40004 Phone: +111111111111 Message: {}
 ```
 - Example get conversation for phone +111111111111 export result as xml
 ```
-./e3372h_320 sms  --exportFile=111111111111.xml --exportFormat=xml
+e3372h_320 sms  --exportFile=111111111111.xml --exportFormat=xml
 cat ./111111111111.xml
 ```
 Result:
@@ -328,7 +328,7 @@ Result:
 
 - Example get all contacts and export as json
 ```
-./e3372h_320 sms  --exportFile=111111111111.json --exportFormat=json
+e3372h_320 sms  --exportFile=111111111111.json --exportFormat=json
 cat ./111111111111.json
 ```
 Result:
@@ -366,7 +366,7 @@ e3372h_320 deleteSMS  --messageId=40005
 
 --help
 ```
-./e3372h_320 mobileData --help
+e3372h_320 mobileData --help
 ```
 
 ```
@@ -463,7 +463,7 @@ poorSignalStatus=0
 
 - Example current status export result as xml
 ```
-./e3372h_320 monitoring  --exportFile=status.xml --exportFormat=xml
+e3372h_320 monitoring  --exportFile=status.xml --exportFormat=xml
 cat ./status.xml
 ```
 Result:
@@ -508,7 +508,7 @@ Result:
 
 - Example current status export result as json
 ```
-./e3372h_320 monitoring  --exportFile=status.json --exportFormat=json
+e3372h_320 monitoring  --exportFile=status.json --exportFormat=json
 cat ./status.json
 ```
 Result:
