@@ -56,7 +56,7 @@ export async function getSMSByUsers(sessionData: SessionData,
     const json = await parser.parseStringPromise(ret);
     const messages = json.response.messages[0].message;
     for (let i = 0; i < messages.length; i++) {
-      await deleteMessage(sessionData, messages[i].index);
+      await deleteMessage(sessionData, messages[i].index[0]);
     }
   }
 }
