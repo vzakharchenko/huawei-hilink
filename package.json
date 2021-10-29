@@ -1,6 +1,6 @@
 {
   "name": "e3372h-320-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "e3372h-320 client",
   "main": "index.js",
   "scripts": {

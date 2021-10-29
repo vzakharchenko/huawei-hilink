@@ -168,9 +168,9 @@ async function doRSAEncrypt(session,encstring) {
     const gEncPublickey = { e: '', n: '' };
     const pubkeyKeyInfo = await getPublicKey(session);
     // eslint-disable-next-line prefer-destructuring
-    gEncPublickey.n = pubkeyKeyInfo.encpubkeyn;
+    gEncPublickey.n = pubkeyKeyInfo.encpubkeyn[0];
     // eslint-disable-next-line prefer-destructuring
-    gEncPublickey.e = pubkeyKeyInfo.encpubkeye;
+    gEncPublickey.e = pubkeyKeyInfo.encpubkeye[0];
     var rsa = new RSAKey();
     rsa.setPublic(gEncPublickey.n, gEncPublickey.e);
     var encStr = base64encode(encstring);
@@ -250,12 +250,25 @@ function utf8to16(str) {
     return output;
 }
 
-function dataDecrypt(scram,smsNonce,smsSalt,nonceStr,pwdret) {
-    if (!pwdret.response
-        || !pwdret.response.pwd
-        || !pwdret.response.hash
-        || !pwdret.response.iter) {
-        return;
+function dataDecrypt(scram,smsNonce,smsSalt,nonceStr,encryptedData) {
+    if (!encryptedData.response
+        || !encryptedData.response.pwd
+        || !encryptedData.response.hash
+        || !encryptedData.response.iter) {
+        throw new Error('Request error: '+JSON.stringify(encryptedData))
+    }
+    if (!encryptedData.response
+        || encryptedData.response.pwd.length===0
+        || encryptedData.response.hash.length === 0
+        || encryptedData.response.iter.length === 0) {
+        throw new Error('Request error: '+JSON.stringify(encryptedData))
+    }
+    const pwdret = {
+        response:{
+            pwd:encryptedData.response.pwd[0],
+            hash:encryptedData.response.hash[0],
+            iter:encryptedData.response.iter[0],
+        }
     }
     var smsEncrypted = pwdret.response.pwd;
     var salt = CryptoJS.enc.Hex.parse(smsSalt);

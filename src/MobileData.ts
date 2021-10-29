@@ -56,7 +56,7 @@ export async function status(sessionData: SessionData, exportFile: string,
       const json = await parser.parseStringPromise(resp);
       const response = json.response;
       Object.keys(response).forEach((key) => {
-        console.info(`${key}=${response[key]}`);
+        console.info(`${key}=${response[key][0]}`);
       });
     }
   }

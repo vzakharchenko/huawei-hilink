@@ -46,20 +46,15 @@ export async function getSMSByUsers(sessionData: SessionData,
       console.info(`json file ${exportFile} created`);
     } else {
       const json = await parser.parseStringPromise(ret);
-      if (Array.isArray(json.response.messages.message)) {
-        json.response.messages.message.forEach((message: any) => {
-          console.log(`MessageId: ${message.index} Phone: ${message.phone} Message: ${JSON.stringify(message.content)}`);
-        });
-      } else {
-        const message: any = json.response.messages.message;
-        console.log(`MessageId: ${message.index} Phone: ${message.phone} Message: ${JSON.stringify(message.content)}`);
-      }
+      json.response.messages[0].message.forEach((message: any) => {
+        console.log(`MessageId: ${message.index[0]} Phone: ${message.phone[0]} Message: ${JSON.stringify(message.content[0])}`);
+      });
     }
   }
 
   if (deleteAfter) {
     const json = await parser.parseStringPromise(ret);
-    const messages = json.response.messages.message;
+    const messages = json.response.messages[0].message;
     for (let i = 0; i < messages.length; i++) {
       await deleteMessage(sessionData, messages[i].index);
     }
@@ -187,13 +182,8 @@ export async function getSMSContacts(sessionData: SessionData,
     console.info(`json file ${exportFile} created`);
   } else {
     const json = await parser.parseStringPromise(ret);
-    if (Array.isArray(json.response.messages.message)) {
-      json.response.messages.message.forEach((message: any) => {
-        console.log(`MessageId: ${message.index} Phone: ${message.phone} lastMessage: ${JSON.stringify(message.content)}`);
-      });
-    } else {
-      const message: any = json.response.messages.message;
-      console.log(`(MessageId: ${message.index}) Phone: ${message.phone} lastMessage: ${message.content}`);
-    }
+    json.response.messages[0].message.forEach((message: any) => {
+      console.log(`MessageId: ${message.index[0]} Phone: ${message.phone[0]} lastMessage: ${JSON.stringify(message.content[0])}`);
+    });
   }
 }
