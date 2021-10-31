@@ -126,12 +126,10 @@ export async function getSMSPages(sessionData: SessionData,
 export async function deleteMessage(sessionData: SessionData,
                                     messageId: string) {
   const sessionData0 = await startSession(sessionData.url);
-  const data = `<?xml version: "1.0" encoding="UTF-8"?><request><Index>${messageId}</Index></request>`;
-  const resp = await restCalls.sendData(`http://${sessionData0.url}/api/sms/delete-sms`, 'POST', data, {
-    __RequestVerificationToken: sessionData0.TokInfo,
-    Cookie: `SessionId=${sessionData0.SesInfo}`,
-  });
-  const json = await parser.parseStringPromise(resp);
+  const data = await huawei.doRSAEncrypt(sessionData0, `<?xml version: "1.0" encoding="UTF-8"?><request><Index>${messageId}</Index></request>`);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData0.url}/api/sms/delete-sms`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const json = await parser.parseStringPromise(resp.data);
   if (json.response !== 'OK') {
     throw new Error(`Delete message error: ${JSON.stringify(json)}`);
   }

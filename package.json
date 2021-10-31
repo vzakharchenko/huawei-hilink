@@ -1,7 +1,7 @@
 {
   "name": "huawei-hilink",
   "version": "1.1.1",
-  "description": "e3372h-320 client",
+  "description": "huawei-hilink client",
   "main": "index.js",
   "scripts": {
     "sendSMS": "node index.js sendSMS  --phone=+11111111111 --message=test123 --url=192.168.89.1 --password=testPassword ",
