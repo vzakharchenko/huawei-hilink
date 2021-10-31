@@ -1,5 +1,5 @@
 {
-  "name": "e3372h-320-cli",
+  "name": "huawei-hilink",
   "version": "1.1.1",
   "description": "e3372h-320 client",
   "main": "index.js",
@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix src --ext .ts"
   },
   "bin": {
-    "e3372h_320": "./bin/e3372h_320"
+    "huawei-hilink": "./bin/e3372h_320"
   },
   "dependencies": {
     "axios": "^0.24.0",
@@ -42,7 +42,7 @@
     "@shopify/eslint-plugin": "^40.4.0",
     "@types/xml2js": "^0.4.9",
     "@types/xml2json": "^0.11.4",
-    "@types/yargs": "^17.0.4",
+    "@types/yargs": "^17.0.5",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "eslint": "7.3.0",
