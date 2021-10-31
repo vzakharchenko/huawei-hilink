@@ -1,3 +1,5 @@
+import {AxiosPromise} from "axios";
+
 export type HTTPMethod =
     | 'get' | 'GET'
     | 'delete' | 'DELETE'
@@ -12,5 +14,7 @@ export type HTTPMethod =
 
 export interface RestCalls {
   fetchData(url:string, method?:HTTPMethod, headers?:any):Promise<string>;
+  fetchDataRaw(url:string, method?:HTTPMethod, headers?:any):Promise<AxiosPromise>;
   sendData(url:string, method:HTTPMethod, data:string, headers?:any):Promise<string>;
+  sendDataRaw(url:string, method:HTTPMethod, data:string, headers?:any):Promise<AxiosPromise>;
 }

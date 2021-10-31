@@ -4,7 +4,15 @@ const {restCalls} = require("../src/utils/DefaultRestCalls");
 const parser = require('xml2js');
 const CryptoJS = require('crypto-js');
 const {RSAKey} = require('./rsa');
-
+const publicKey = {
+    publicKey:null,
+};
+const publicSession = {
+    login:'0',
+    session:'',
+    token1:'',
+    token2:''
+};
 
 var C = CryptoJS;
 var C_lib = C.lib;
@@ -103,12 +111,15 @@ C.SCRAM = function (cfg) {
 
 
 async function getPublicKey(session){
-    const resp = await restCalls.fetchData(`http://${session.url}/api/webserver/publickey`,'GET', {
-        'cookie': `sessionId=${session.SesInfo}`,
-        __RequestVerificationToken: session.TokInfo
-    });
-    const message = await parser.parseStringPromise(resp);
-    return message.response;
+    if (!publicKey.publicKey){
+        const resp = await restCalls.fetchData(`http://${session.url}/api/webserver/publickey`,'GET', {
+            'cookie': `sessionId=${session.SesInfo}`,
+            __RequestVerificationToken: session.TokInfo
+        });
+        const message = await parser.parseStringPromise(resp);
+        publicKey.publicKey= message.response;
+    }
+    return publicKey.publicKey
 }
 
 function utf8Encode(string) {
@@ -293,3 +304,5 @@ function dataDecrypt(scram,smsNonce,smsSalt,nonceStr,encryptedData) {
 module.exports.dataDecrypt = dataDecrypt;
 module.exports.CryptoJS = CryptoJS;
 module.exports.doRSAEncrypt = doRSAEncrypt;
+module.exports.publicKey = publicKey;
+module.exports.publicSession = publicSession;

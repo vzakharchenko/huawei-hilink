@@ -1,9 +1,10 @@
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
-import {startSession} from "./src/startSession";
+import {login, logout, startSession} from "./src/startSession";
 import {
-    deleteMessage, getInBoxSMS,
+    deleteMessage,
     getContactSMSPages,
+    getInBoxSMS,
     getSMSByUsers,
     getSMSContacts,
     getSMSPages,
@@ -14,29 +15,52 @@ import {controlMobileData, reconnect, status} from "./src/MobileData";
 // @ts-ignore
 yargs(hideBin(process.argv))
     .command('sendSMS', 'send SMS to contact or group of contacts', (yargs) => {
+        // @ts-ignore
         return yargs
             .positional('url', {
                 describe: 'huawei host',
                 default: '192.168.8.1'
+            })
+            .positional('username', {
+                describe: 'huawei username',
+                default: 'admin'
+            })
+            .positional('password', {
+                describe: 'huawei password',
+                type: 'string'
             }).positional('phone', {
                 describe: 'phones with ; as separator ',
-                type:"string",
+                type: "string",
             }).positional('message', {
                 describe: 'text message ',
-                type:"string",
+                type: "string",
             })
     }, async (argv) => {
-        const sessionData = await startSession(argv.url);
-        if (!argv.phone) {
-            throw new Error('Phone number is not defined');
-            return;
+        await login(argv.url, argv.username, argv.password);
+        try {
+            const sessionData = await startSession(argv.url);
+            if (!argv.phone) {
+                throw new Error('Phone number is not defined');
+                return;
+            }
+            await sendMessage(sessionData, argv.phone, argv.message || '');
+        } finally {
+            await logout(argv.url);
         }
-        await sendMessage(sessionData, argv.phone, argv.message||'');
     }).command('contacts', 'get contact list with the latest sms messages', (yargs) => {
-    return yargs
+    // @ts-ignore
+        return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('page', {
             describe: 'sms page',
             default: 1
@@ -48,22 +72,28 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'xml': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
+            }
         }
-        case 'xml': {
-            break;
-        }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
-        }
+
+        await getSMSContacts(sessionData, argv.page, argv.exportFile, argv.exportFormat);
+    } finally {
+        await logout(argv.url);
     }
-    await getSMSContacts(sessionData, argv.page, argv.exportFile, argv.exportFormat);
 }).command('messages', 'get all messages from InBox', (yargs) => {
     return yargs
         .positional('url', {
@@ -72,7 +102,16 @@ yargs(hideBin(process.argv))
         }).positional('deleteAfter', {
             describe: 'delete all messages after reading ',
             default: false
-        }).positional('exportFile', {
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
+        })
+        .positional('exportFile', {
             describe: 'export to file',
             default: './inbox.list'
         }).positional('exportFormat', {
@@ -80,24 +119,38 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: json,none`)
+            }
         }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: json,none`)
-        }
+        await getInBoxSMS(sessionData, argv.deleteAfter, argv.exportFile, argv.exportFormat);
+    } finally {
+        await logout(argv.url);
     }
-    await getInBoxSMS(sessionData, argv.deleteAfter, argv.exportFile, argv.exportFormat);
 }).command('contactPages', 'contact list pages', (yargs) => {
+    // @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('exportFile', {
             describe: 'export to file',
             default: './contactsCount.list'
@@ -106,29 +159,44 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'xml': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
+            }
         }
-        case 'xml': {
-            break;
-        }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
-        }
+        await getSMSPages(sessionData, argv.exportFile, argv.exportFormat);
+    } finally {
+        await logout(argv.url);
     }
-    await getSMSPages(sessionData, argv.exportFile, argv.exportFormat);
 }).command('sms', 'get contact SMS list', (yargs) => {
+    // @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1',
         }).positional('phone', {
             describe: 'contact phone number',
+            type: 'string'
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
             type: 'string'
         }).positional('page', {
             describe: 'sms page',
@@ -144,30 +212,44 @@ yargs(hideBin(process.argv))
             default: false
         })
 }, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    if (!argv.phone) {
-        throw new Error('phone is not defined');
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        if (!argv.phone) {
+            throw new Error('phone is not defined');
+        }
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'xml': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
+            }
+        }
+        await getSMSByUsers(sessionData, argv.phone, argv.page, argv.exportFile, argv.exportFormat, argv.deleteAfter);
+    } finally {
+        await logout(argv.url);
     }
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
-        }
-        case 'xml': {
-            break;
-        }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
-        }
-    }
-    await getSMSByUsers(sessionData, argv.phone, argv.page, argv.exportFile, argv.exportFormat, argv.deleteAfter);
 }).command('pages', 'count of sms pages', (yargs) => {
+// @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('phone', {
             describe: 'contact phone number',
             type: 'string'
@@ -179,72 +261,111 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    if (!argv.phone) {
-        throw new Error('phone is not defined');
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        if (!argv.phone) {
+            throw new Error('phone is not defined');
+        }
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'xml': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
+            }
+        }
+        await getContactSMSPages(sessionData, argv.phone, argv.exportFile, argv.exportFormat);
+    } finally {
+        await logout(argv.url);
     }
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
-        }
-        case 'xml': {
-            break;
-        }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
-        }
-    }
-    await getContactSMSPages(sessionData, argv.phone, argv.exportFile, argv.exportFormat);
-}).command('deleteSMS', 'delete sms by smsId', (yargs) => {
+}).command('deleteSMS', 'delete sms by smsId', (yargs: any) => {
+    // @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        })
+        .positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('messageId', {
             describe: 'messageId or index',
             type: 'string'
         })
-}, async (argv) => {
-    const sessionData = await startSession(argv.url);
-    if (!argv.messageId) {
-        throw new Error('messageId is not defined');
+}, async (argv: any) => {
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        if (!argv.messageId) {
+            throw new Error('messageId is not defined');
+        }
+        await deleteMessage(sessionData, argv.messageId);
+    } finally {
+        await logout(argv.url)
     }
-    await deleteMessage(sessionData, argv.messageId);
-}).command('mobileData', 'Enable/Disable or Reconnect Mobile Data', (yargs:any) => {
+}).command('mobileData', 'Enable/Disable or Reconnect Mobile Data', (yargs: any) => {
+    // @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        }).positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('mode', {
             describe: 'change mobile data to on,off or reconnect',
         })
-}, async (argv:any) => {
-    const sessionData = await startSession(argv.url);
-    switch (argv.mode) {
-        case 'reconnect': {
-            await reconnect(sessionData);
-            return;
+}, async (argv: any) => {
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        switch (argv.mode) {
+            case 'reconnect': {
+                await reconnect(sessionData);
+                return;
+            }
+            case 'on': {
+                break;
+            }
+            case 'off': {
+                break
+            }
+            default: {
+                throw new Error('Does not support Mode: ' + argv.mode + '. Supported only on,off,reconnect')
+            }
         }
-        case 'on': {
-            break;
-        }
-        case 'off': {
-            break
-        }
-        default: {
-            throw new Error('Does not support Mode: ' + argv.mode + '. Supported only on,off,reconnect')
-        }
+        await controlMobileData(sessionData, argv.mode);
+    } finally {
+        await logout(argv.url);
     }
-    await controlMobileData(sessionData, argv.mode);
-}).command('monitoring', 'current Monitoring status', (yargs:any) => {
+}).command('monitoring', 'current Monitoring status', (yargs: any) => {
 // @ts-ignore
     return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
+        }).positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
         }).positional('exportFile', {
             describe: 'export to file',
             default: './monitoring.log'
@@ -252,23 +373,28 @@ yargs(hideBin(process.argv))
             describe: 'export format (xml, json, none)',
             default: 'none'
         })
-}, async (argv:any) => {
-    const sessionData = await startSession(argv.url);
-    switch (argv.exportFormat) {
-        case 'json': {
-            break;
+}, async (argv: any) => {
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        switch (argv.exportFormat) {
+            case 'json': {
+                break;
+            }
+            case 'xml': {
+                break;
+            }
+            case 'none': {
+                break;
+            }
+            default: {
+                throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
+            }
         }
-        case 'xml': {
-            break;
-        }
-        case 'none': {
-            break;
-        }
-        default: {
-            throw new Error(`export Format ${argv.exportFile} does not supported: supported only: xml,json,none`)
-        }
+        await status(sessionData, argv.exportFile, argv.exportFormat);
+    } finally {
+        await logout(argv.url);
     }
-    await status(sessionData, argv.exportFile, argv.exportFormat);
 })
     // .option('verbose', {
     //     alias: 'v',

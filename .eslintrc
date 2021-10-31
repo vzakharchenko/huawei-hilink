@@ -32,6 +32,8 @@
     "@typescript-eslint/no-var-requires": 0,
     "no-console": 0,
     "import/no-unresolved": 0,
+    "require-atomic-updates": 0,
+    "@shopify/prefer-early-return": 0,
     " import/no-unresolved": 0
   }
 }

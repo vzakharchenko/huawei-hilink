@@ -5,7 +5,9 @@ import parser from "xml2js";
 import {SessionData} from "./startSession";
 import {restCalls} from "./utils/DefaultRestCalls";
 import {ExportFormat} from "./utils/Constants";
+import {getSessionHeaders} from "./utils/HuaweiUtils";
 
+const huawei = require('../jslib/public');
 
 type MobileStatus = 'on' | 'off';
 
@@ -14,12 +16,10 @@ async function saveFile(filename: string, data: string) {
 }
 
 export async function controlMobileData(sessionData: SessionData, mobileStatus: MobileStatus) {
-  const data = `<?xml version="1.0" encoding="UTF-8"?><request><dataswitch>${mobileStatus === 'on' ? 1 : 0}</dataswitch></request>`;
-  const resp = await restCalls.sendData(`http://${sessionData.url}/api/dialup/mobile-dataswitch`, 'POST', data, {
-    __RequestVerificationToken: sessionData.TokInfo,
-    Cookie: `SessionId=${sessionData.SesInfo}`,
-  });
-  const json = await parser.parseStringPromise(resp);
+  const data = await huawei.doRSAEncrypt(sessionData, `<?xml version="1.0" encoding="UTF-8"?><request><dataswitch>${mobileStatus === 'on' ? 1 : 0}</dataswitch></request>`);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/dialup/mobile-dataswitch`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const json = await parser.parseStringPromise(resp.data);
   if (json.response !== 'OK') {
     throw new Error(`Control Mobile Data error: ${JSON.stringify(json)}`);
   }
@@ -27,12 +27,10 @@ export async function controlMobileData(sessionData: SessionData, mobileStatus: 
 }
 
 export async function reconnect(sessionData: SessionData) {
-  const data = `<?xml version: "1.0" encoding="UTF-8"?><request><ReconnectAction>1</ReconnectAction></request>`;
-  const resp = await restCalls.sendData(`http://${sessionData.url}/api/net/reconnect`, 'POST', data, {
-    __RequestVerificationToken: sessionData.TokInfo,
-    Cookie: `SessionId=${sessionData.SesInfo}`,
-  });
-  const json = await parser.parseStringPromise(resp);
+  const data = await huawei.doRSAEncrypt(sessionData, `<?xml version: "1.0" encoding="UTF-8"?><request><ReconnectAction>1</ReconnectAction></request>`);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/net/reconnect`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const json = await parser.parseStringPromise(resp.data);
   if (json.response !== 'OK') {
     throw new Error(`Reconnecting error: ${JSON.stringify(json)}`);
   }
@@ -41,10 +39,7 @@ export async function reconnect(sessionData: SessionData) {
 
 export async function status(sessionData: SessionData, exportFile: string,
                              exportFormat: ExportFormat) {
-  const resp = await restCalls.fetchData(`http://${sessionData.url}/api/monitoring/status`, 'GET', {
-    __RequestVerificationToken: sessionData.TokInfo,
-    Cookie: `SessionId=${sessionData.SesInfo}`,
-  });
+  const resp = await restCalls.fetchData(`http://${sessionData.url}/api/monitoring/status`, 'GET', await getSessionHeaders(sessionData.url));
   if (exportFormat !== 'hide') {
     if (exportFormat === 'xml') {
       await saveFile(exportFile, resp);

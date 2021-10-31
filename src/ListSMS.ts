@@ -5,6 +5,7 @@ import parser from 'xml2js';
 import {SessionData, startSession} from './startSession';
 import {restCalls} from "./utils/DefaultRestCalls";
 import {ExportFormat} from "./utils/Constants";
+import {getSessionHeaders} from "./utils/HuaweiUtils";
 
 const huawei = require('../jslib/public');
 
@@ -45,12 +46,9 @@ export async function getSMSByUsers(sessionData: SessionData,
   const nonceStr = smsNonce + smsSalt;
   const encrpt = await huawei.doRSAEncrypt(sessionData0, nonceStr);
   const data = await huawei.doRSAEncrypt(sessionData, `<?xml version="1.0" encoding="UTF-8"?><request><phone>${phone}</phone><pageindex>${pageindex}</pageindex><readcount>20</readcount><nonce>${encrpt}</nonce></request>`);
-  const resp = await restCalls.sendData(`http://${sessionData0.url}/api/sms/sms-list-phone`, 'POST', data, {
-    __RequestVerificationToken: sessionData0.TokInfo,
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8;enc',
-    Cookie: `SessionId=${sessionData0.SesInfo}`,
-  });
-  const pwdret = await parser.parseStringPromise((resp));
+  const resp = await restCalls.sendDataRaw(`http://${sessionData0.url}/api/sms/sms-list-phone`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const pwdret = await parser.parseStringPromise((resp.data));
   const ret = huawei.dataDecrypt(scram, smsNonce, smsSalt, nonceStr, pwdret);
   if (deleteAfter) {
     const json = await parser.parseStringPromise(ret);
@@ -81,20 +79,16 @@ export async function getContactSMSPages(sessionData: SessionData,
                                          exportFile: string,
                                          exportFormat: ExportFormat) {
   const data = await huawei.doRSAEncrypt(sessionData, `<?xml version="1.0" encoding="UTF-8"?><request><phone>${phone}</phone></request>`);
-  const resp = await restCalls.sendData(`http://${sessionData.url}/api/sms/sms-count-contact`, 'POST', data, {
-    __RequestVerificationToken: sessionData.TokInfo,
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8;enc',
-    Cookie: `SessionId=${sessionData.SesInfo}`,
-  });
-
-  const json = await parser.parseStringPromise(resp);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/sms/sms-count-contact`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const json = await parser.parseStringPromise(resp.data);
   let number = Math.floor(json.response.count / 21);
   if (number > 0) {
     number += 1;
   }
   if (exportFormat !== 'hide') {
     if (exportFormat === 'xml') {
-      await saveFile(exportFile, resp);
+      await saveFile(exportFile, resp.data);
       console.info(`xml file ${exportFile} created`);
     } else if (exportFormat === 'json') {
       await saveFile(exportFile, JSON.stringify(await parser.parseStringPromise(resp)));
@@ -114,7 +108,7 @@ export async function getSMSPages(sessionData: SessionData,
     Cookie: `SessionId=${sessionData.SesInfo}`,
   });
   const json = await parser.parseStringPromise(resp);
-  const number = Math.floor((json.response.LocalInbox[0] + json.response.LocalOutbox[0]) / 21);
+  const number = Math.floor((json.response.LocalInbox[0] + json.response.LocalOutbox[0]) / 21) + 1;
   if (exportFormat !== 'hide') {
     if (exportFormat === 'xml') {
       await saveFile(exportFile, resp);
@@ -153,12 +147,9 @@ export async function sendMessage(sessionData: SessionData,
   const nonceStr = smsNonce + smsSalt;
   const encrpt = await huawei.doRSAEncrypt(sessionData, nonceStr);
   const data = await huawei.doRSAEncrypt(sessionData, `<?xml version="1.0" encoding="UTF-8"?><request><Index>-1</Index><Phones><Phone>${(phones)}</Phone></Phones><Sca></Sca><Content>${message}</Content><Length>${message.length}</Length><Reserved>1</Reserved><Date>2021-10-27 00:12:24</Date><nonce>${encrpt}</nonce></request>`);
-  const resp = await restCalls.sendData(`http://${sessionData.url}/api/sms/send-sms`, 'POST', data, {
-    __RequestVerificationToken: sessionData.TokInfo,
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8;enc',
-    Cookie: `SessionId=${sessionData.SesInfo}`,
-  });
-  const json = await parser.parseStringPromise(resp);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/sms/send-sms`, 'POST', data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const json = await parser.parseStringPromise(resp.data);
   if (json.response !== 'OK') {
     throw new Error(`Delete message error: ${JSON.stringify(json)}`);
   }
@@ -215,13 +206,10 @@ export async function getSMSContacts(sessionData0: SessionData,
   const nonceStr = smsNonce + smsSalt;
   const encrpt = await huawei.doRSAEncrypt(sessionData, nonceStr);
   const data = await huawei.doRSAEncrypt(sessionData, `<?xml version: "1.0" encoding="UTF-8"?><request><pageindex>${pageindex}</pageindex><readcount>20</readcount><nonce>${encrpt}</nonce></request>`);
-  const resp = await restCalls.sendData(`http://${sessionData.url}/api/sms/sms-list-contact`, 'POST',
-        data, {
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8;enc',
-          __RequestVerificationToken: sessionData.TokInfo,
-          Cookie: `SessionId=${sessionData.SesInfo}`,
-        });
-  const pwdret = await parser.parseStringPromise(resp);
+  const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/sms/sms-list-contact`, 'POST',
+        data, await getSessionHeaders(sessionData.url));
+  huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
+  const pwdret = await parser.parseStringPromise(resp.data);
   const ret = huawei.dataDecrypt(scram, smsNonce, smsSalt, nonceStr, pwdret);
   const json = await parser.parseStringPromise(ret);
   if (exportFormat !== 'hide') {
