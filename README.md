@@ -1,4 +1,4 @@
-# Huaweihuawei-hilink client
+# huawei-hilink client
  Control Huawei huawei-hilink (CL4E3372HM) from /bin/bash
 
 [![Node.js 10.x, 12.x, 13.x, 14.x, 15.x CI](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml/badge.svg)](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml)
