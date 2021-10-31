@@ -1,5 +1,5 @@
 # huawei-hilink client
- Control Huawei huawei-hilink (CL4E3372HM) from /bin/bash
+ Control Huawei hilink router (CL4E3372HM) from the bash console
 
 [![Node.js 10.x, 12.x, 13.x, 14.x, 15.x CI](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml/badge.svg)](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml)
 
@@ -8,9 +8,11 @@
 
 
 # Features
-- support login request
-- can read/send SMS messages
- 
+- support "device login password"
+- can read and send SMS messages from the command line
+- reconnect network
+- on/off mobile data
+
 # Tested on
 E3372h-320
 version: 11.0.1.1(H697SP1C983)
@@ -27,8 +29,22 @@ Web UI version WEBUI 11.0.1.1(W13SP2C7201)
 sudo npm i huawei-hilink -g
 ```
 
-# Docker installation
+## Docker installation
 TODO
+
+## Device Login password Page
+
+add argument **--password="YOUR_PASSWORD"** to command line.
+
+![](./docs/login.png)
+![](./docs/RequirePassword.png)
+
+- example
+```
+huawei-hilink sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
+```
+
+
 
 ## How to use
 
@@ -73,10 +89,10 @@ result:
 ```
 huawei-hilink sendSMS  --phone=+11111111111 --message="Test message"
 ```
-- Send message "Test message" to +11111111111 with enabled "Password required"
+- Send message "Test message" to +11111111111 with enabled "Require Password"
 ```
 huawei-hilink sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
-``` 
+```
 
 
 ### SMS Conversation API
@@ -91,9 +107,9 @@ Result:
 MessageId: 40004 Phone: +22222222222 lastMessage: {}
 MessageId: 40005 Phone: +11111111111 lastMessage: "Test message"
 ```
- -  get all contacts with enabled "Password required"
+ -  get all contacts with enabled "Require Password"
 ```
-huawei-hilink contacts with enabled "Password required" --password="YOUR_PASSWORD"
+huawei-hilink contacts with enabled "Require Password" --password="YOUR_PASSWORD"
 ```
 Result:
 ```
@@ -206,7 +222,7 @@ MessageId: 40004 Phone: +111111111111 Message: {}
 ```
 
 
-- get conversation for phone +111111111111  with enabled "Password required"
+- get conversation for phone +111111111111  with enabled "Require Password"
 ```
 huawei-hilink sms --phone=+111111111111 --password="YOUR_PASSWORD"
 ```
@@ -313,14 +329,12 @@ Result:
 huawei-hilink deleteSMS  --messageId=40005
 ```
 
--  delete message   with enabled "Password required"
+-  delete message   with enabled "Require Password"
 ```
 huawei-hilink deleteSMS  --messageId=40005 --password="YOUR_PASSWORD"
 ```
 
 ### mobileData
-
-
 
 -  disable mobile data
 ```
@@ -340,7 +354,7 @@ huawei-hilink mobileData --mode=reconnect  --password="YOUR_PASSWORD"
 
 - get current status
 ```
-e3372h_320 monitoring
+huawei-hilink monitoring
 ```
 ```
 ConnectionStatus=901
@@ -380,7 +394,7 @@ poorSignalStatus=0
 
 -  get status export result as xml
 ```
-e3372h_320 monitoring  --exportFile=status.xml --exportFormat=xml
+huawei-hilink monitoring  --exportFile=status.xml --exportFormat=xml
 cat ./status.xml
 ```
 Result:
@@ -425,7 +439,7 @@ Result:
 
 - get current status export result as json
 ```
-e3372h_320 monitoring  --exportFile=status.json --exportFormat=json
+huawei-hilink monitoring  --exportFile=status.json --exportFormat=json
 cat ./status.json
 ```
 Result:
