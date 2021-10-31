@@ -6,6 +6,7 @@ const CryptoJS = require('crypto-js');
 const {RSAKey} = require('./rsa');
 const publicKey = {
     publicKey:null,
+    rsapadingtype:"1",
 };
 const publicSession = {
     login:'0',
@@ -186,19 +187,19 @@ async function doRSAEncrypt(session,encstring) {
     rsa.setPublic(gEncPublickey.n, gEncPublickey.e);
     var encStr = base64encode(encstring);
     var num = encStr.length / 245;
-    // if (EMUI.LoginStateController.rsapadingtype === '1') {
-    num = encStr.length / 214;
-    // }
+    if (publicKey.rsapadingtype === '1') {
+        num = encStr.length / 214;
+     }
     var restotal = '';
     var rsan = gEncPublickey.n;
     for (var i = 0; i < num; i++) {
-        // if (EMUI.LoginStateController.rsapadingtype === '1') {
+        if (publicKey.rsapadingtype === '1') {
         var encdata = encStr.substr(i * 214, 214);
         res = rsa.encryptOAEP(encdata);
-        // } else {
-        //   var encdata = encStr.substr(i * 245, 245);
-        //    res = rsa.encrypt(encdata);
-        // }
+         } else {
+          var encdata = encStr.substr(i * 245, 245);
+           res = rsa.encrypt(encdata);
+        }
         if (res.length !== rsan.length) {
             i--;
             continue;

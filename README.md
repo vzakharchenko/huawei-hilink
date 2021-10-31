@@ -494,3 +494,15 @@ example only encrypt API
     const responseText = resp.data;
 ```
 
+# rsapadingtype parameter value
+
+1. open modem web-ui : ```http://192.168.8.1```
+2. open web console on your browser (Chrome Ctrl+Shift+I)
+3. open tab console
+4. execute command
+```
+EMUI.LoginStateController.rsapadingtype
+```
+
+
+

@@ -11,6 +11,7 @@ import {
     sendMessage
 } from "./src/ListSMS";
 import {controlMobileData, reconnect, status} from "./src/MobileData";
+const huawei = require('./jslib/public');
 
 // @ts-ignore
 yargs(hideBin(process.argv))
@@ -36,6 +37,7 @@ yargs(hideBin(process.argv))
                 type: "string",
             })
     }, async (argv) => {
+        huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
         await login(argv.url, argv.username, argv.password);
         try {
             const sessionData = await startSession(argv.url);
@@ -72,7 +74,8 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    await login(argv.url, argv.username, argv.password);
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+        await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
         switch (argv.exportFormat) {
@@ -159,6 +162,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -212,6 +216,7 @@ yargs(hideBin(process.argv))
             default: false
         })
 }, async (argv) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -261,6 +266,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -304,6 +310,7 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
 }, async (argv: any) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -331,6 +338,7 @@ yargs(hideBin(process.argv))
             describe: 'change mobile data to on,off or reconnect',
         })
 }, async (argv: any) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -374,6 +382,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv: any) => {
+    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -396,9 +405,9 @@ yargs(hideBin(process.argv))
         await logout(argv.url);
     }
 })
-    // .option('verbose', {
-    //     alias: 'v',
-    //     type: 'boolean',
-    //     description: 'Run with verbose logging'
-    // })
+    .option('rsapadingtype', {
+        type: 'string',
+        description: 'rsapadingtype, to check your run in web-console: MUI.LoginStateController.rsapadingtype',
+        default:'1'
+    })
     .parse()
