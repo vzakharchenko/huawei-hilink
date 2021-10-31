@@ -1,5 +1,5 @@
-# Huawei E3372h-320 cli
- Control Huawei E3372h-320 (CL4E3372HM) from /bin/bash
+# Huaweihuawei-hilink client
+ Control Huawei huawei-hilink (CL4E3372HM) from /bin/bash
 
 [![Node.js 10.x, 12.x, 13.x, 14.x, 15.x CI](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml/badge.svg)](https://github.com/vzakharchenko/E3372h-320-cli/actions/workflows/main.yml)
 
@@ -35,22 +35,22 @@ TODO
 ### Help
 
 ```
-e3372h_320 --help
+huawei-hilink --help
 ```
 result:
 ```
-e3372h_320 [command]
+huawei-hilink [command]
 
 Commands:
-  e3372h_320 sendSMS       send SMS to contact or group of contacts
-  e3372h_320 contacts      get contact list with the latest sms messages
-  e3372h_320 messages      get all messages from InBox
-  e3372h_320 contactPages  contact list pages
-  e3372h_320 sms           get contact SMS list
-  e3372h_320 pages         count of sms pages
-  e3372h_320 deleteSMS     delete sms by smsId
-  e3372h_320 mobileData    Enable/Disable or Reconnect Mobile Data
-  e3372h_320 monitoring    current Monitoring status
+  huawei-hilink sendSMS       send SMS to contact or group of contacts
+  huawei-hilink contacts      get contact list with the latest sms messages
+  huawei-hilink messages      get all messages from InBox
+  huawei-hilink contactPages  contact list pages
+  huawei-hilink sms           get contact SMS list
+  huawei-hilink pages         count of sms pages
+  huawei-hilink deleteSMS     delete sms by smsId
+  huawei-hilink mobileData    Enable/Disable or Reconnect Mobile Data
+  huawei-hilink monitoring    current Monitoring status
 
 Options:
   --help     Show help                                                 [boolean]
@@ -60,7 +60,7 @@ Options:
 ### Version
 
 ```
-e3372h_320 --version
+huawei-hilink --version
 ```
 result:
 ```
@@ -71,11 +71,11 @@ result:
 
 - Send message "Test message" to +11111111111
 ```
-e3372h_320 sendSMS  --phone=+11111111111 --message="Test message"
+huawei-hilink sendSMS  --phone=+11111111111 --message="Test message"
 ```
 - Send message "Test message" to +11111111111 with enabled "Password required"
 ```
-e3372h_320 sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
+huawei-hilink sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
 ``` 
 
 
@@ -84,16 +84,16 @@ e3372h_320 sendSMS  --phone=+11111111111 --message="Test message" --password="YO
 ![](./docs/smsConversation1.png)
  -  get all contacts
 ```
-e3372h_320 contacts
+huawei-hilink contacts
 ```
 Result:
 ```
 MessageId: 40004 Phone: +22222222222 lastMessage: {}
 MessageId: 40005 Phone: +11111111111 lastMessage: "Test message"
 ```
- -  get all contacts with 
+ -  get all contacts with enabled "Password required"
 ```
-e3372h_320 contacts with enabled "Password required" --password="YOUR_PASSWORD"
+huawei-hilink contacts with enabled "Password required" --password="YOUR_PASSWORD"
 ```
 Result:
 ```
@@ -102,7 +102,7 @@ MessageId: 40005 Phone: +11111111111 lastMessage: "Test message"
 ```
 -  get all contacts and export as xml
 ```
-./e3372h_320 contacts --exportFormat=xml --exportFile='./contacts.xml'
+huawei-hilink contacts --exportFormat=xml --exportFile='./contacts.xml'
 cat ./contacts.xml
 ```
 Result:
@@ -141,7 +141,7 @@ Result:
 
 - Example get all contacts and export as json
 ```
-e3372h_320 contacts --exportFormat=json --exportFile='./contacts.json'
+huawei-hilink contacts --exportFormat=json --exportFile='./contacts.json'
 cat ./contacts.json
 ```
 Result:
@@ -187,36 +187,13 @@ Result:
 }
 ```
 
-### SMS Contact Conversation API
+### List SMS For the specific phone
 
 ![](./docs/smsConversation1.png)
 
-- help
+- get conversation for phone +111111111111
 ```
-e3372h_320 sms --help
-```
-Result:
-```
-e3372h_320 sms
-
-get contact SMS list
-
-Positionals:
-  url           huawei host                             [default: "192.168.8.1"]
-  phone         contact phone number                                    [string]
-  page          sms page                                            [default: 1]
-  exportFile    export to file                           [default: "./sms.list"]
-  exportFormat  export format (xml, json, none)                [default: "none"]
-  deleteAfter   delete all messages after reading               [default: false]
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
-```
-
-- Example get conversation for phone +111111111111
-```
-e3372h_320 sms --phone=+111111111111
+huawei-hilink sms --phone=+111111111111
 ```
 Result:
 ```
@@ -227,9 +204,25 @@ MessageId: 40002 Phone: +111111111111 Message: {}
 MessageId: 40004 Phone: +111111111111 Message: {}
 
 ```
+
+
+- get conversation for phone +111111111111  with enabled "Password required"
+```
+huawei-hilink sms --phone=+111111111111 --password="YOUR_PASSWORD"
+```
+Result:
+```
+MessageId: 40001 Phone: +111111111111 Message: "test123"
+MessageId: 40003 Phone: +111111111111 Message: "test123"
+MessageId: 40000 Phone: +111111111111 Message: "Sms"
+MessageId: 40002 Phone: +111111111111 Message: {}
+MessageId: 40004 Phone: +111111111111 Message: {}
+
+```
+
 - Example get conversation for phone +111111111111 export result as xml
 ```
-e3372h_320 sms  --exportFile=111111111111.xml --exportFormat=xml
+huawei-hilink sms  --exportFile=111111111111.xml --exportFormat=xml
 cat ./111111111111.xml
 ```
 Result:
@@ -304,7 +297,7 @@ Result:
 
 - Example get all contacts and export as json
 ```
-e3372h_320 sms  --exportFile=111111111111.json --exportFormat=json
+huawei-hilink sms  --exportFile=111111111111.json --exportFormat=json
 cat ./111111111111.json
 ```
 Result:
@@ -314,90 +307,38 @@ Result:
 
 ### Delete sms message
 
-- help
+
+-  delete message
 ```
-e3372h_320 deleteSMS --help
-```
-
-```
-e3372h_320 deleteSMS
-
-delete sms by smsId
-
-Positionals:
-  url        huawei host                                [default: "192.168.8.1"]
-  messageId  messageId or index                                         [string]
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
+huawei-hilink deleteSMS  --messageId=40005
 ```
 
-- Example delete message
+-  delete message   with enabled "Password required"
 ```
-e3372h_320 deleteSMS  --messageId=40005
+huawei-hilink deleteSMS  --messageId=40005 --password="YOUR_PASSWORD"
 ```
 
 ### mobileData
 
---help
+
+
+-  disable mobile data
 ```
-e3372h_320 mobileData --help
-```
-
-```
-e3372h_320 mobileData
-
-Enable/Disable or Reconnect Mobile Data
-
-Positionals:
-  url   huawei host                                     [default: "192.168.8.1"]
-  mode  change mobile data to on,off or reconnect
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
-```
-
-
-- Example disable mobile data
-```
-e3372h_320 mobileData --mode=on
+huawei-hilink mobileData --mode=on --password="YOUR_PASSWORD"
 ```
 
 - Example enable mobile data
 ```
-e3372h_320 mobileData --mode=off
+huawei-hilink mobileData --mode=off --password="YOUR_PASSWORD"
 ```
 - Example reconnect
 ```
-e3372h_320 mobileData --mode=reconnect
+huawei-hilink mobileData --mode=reconnect  --password="YOUR_PASSWORD"
 ```
 
 ###  current Monitoring status
 
--help
-```
- e3372h_320 monitoring  --help
-```
-
-```
-e3372h_320 monitoring
-
-current Monitoring status
-
-Positionals:
-  url           huawei host                             [default: "192.168.8.1"]
-  exportFile    export to file                     [default: "./monitoring.log"]
-  exportFormat  export format (xml, json, none)                [default: "none"]
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
-
-```
-
-- Example current status
+- get current status
 ```
 e3372h_320 monitoring
 ```
@@ -437,7 +378,7 @@ speedLimitStatus=0
 poorSignalStatus=0
 ```
 
-- Example current status export result as xml
+-  get status export result as xml
 ```
 e3372h_320 monitoring  --exportFile=status.xml --exportFormat=xml
 cat ./status.xml
@@ -482,7 +423,7 @@ Result:
 </response>
 ```
 
-- Example current status export result as json
+- get current status export result as json
 ```
 e3372h_320 monitoring  --exportFile=status.json --exportFormat=json
 cat ./status.json
