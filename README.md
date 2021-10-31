@@ -6,6 +6,11 @@
 ![](./docs/4889330.jpg)
 ![](./docs/4889332.jpg)
 
+
+# Features
+- support login request
+- can read/send SMS messages
+ 
 # Tested on
 E3372h-320
 version: 11.0.1.1(H697SP1C983)
@@ -19,7 +24,7 @@ Web UI version WEBUI 11.0.1.1(W13SP2C7201)
 ## Installation
 - install package
 ```
-sudo npm i e3372h-320-cli -g
+sudo npm i huawei-hilink -g
 ```
 
 # Docker installation
@@ -37,19 +42,20 @@ result:
 e3372h_320 [command]
 
 Commands:
-  e3372h_320 sendSMS            send SMS to contact or group of contacts
-  e3372h_320 contacts           get contact list with the latest sms messages
-  e3372h_320 contactPages       contact list pages
-  e3372h_320 sms                get contact SMS list
-  e3372h_320 pages              count of sms pages
-  e3372h_320 deleteSMS          delete sms by smsId
-  e3372h_320 mobileData         Enable/Disable or Reconnect Mobile Data
-  e3372h_320 monitoring         current Monitoring status
+  e3372h_320 sendSMS       send SMS to contact or group of contacts
+  e3372h_320 contacts      get contact list with the latest sms messages
+  e3372h_320 messages      get all messages from InBox
+  e3372h_320 contactPages  contact list pages
+  e3372h_320 sms           get contact SMS list
+  e3372h_320 pages         count of sms pages
+  e3372h_320 deleteSMS     delete sms by smsId
+  e3372h_320 mobileData    Enable/Disable or Reconnect Mobile Data
+  e3372h_320 monitoring    current Monitoring status
 
 Options:
   --help     Show help                                                 [boolean]
   --version  Show version number                                       [boolean]
-                                     [boolean]
+
 ```
 ### Version
 
@@ -62,60 +68,21 @@ result:
 ```
 
 ### Send SMS
-- help
-```
-e3372h_320 sendSMS --help
-```
-result
-```
-e3372h_320 sendSMS
 
-send SMS to contact or group of contacts
-
-Positionals:
-  url      huawei host                                  [default: "192.168.8.1"]
-  phone    phones with ; as separator                                   [string]
-  message  text message                                                 [string]
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
-```
-
-- Examples
-Send message "Test message" to +11111111111
+- Send message "Test message" to +11111111111
 ```
 e3372h_320 sendSMS  --phone=+11111111111 --message="Test message"
 ```
+- Send message "Test message" to +11111111111 with enabled "Password required"
+```
+e3372h_320 sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
+``` 
 
 
 ### SMS Conversation API
 
 ![](./docs/smsConversation1.png)
-
-result
-- help
-```
-e3372h_320 contacts --help
-```
-
-```
-e3372h_320 contacts
-
-get contact list with the latest sms messages
-
-Positionals:
-  url           huawei host                             [default: "192.168.8.1"]
-  page          sms page                                            [default: 1]
-  exportFile    export to file                      [default: "./contacts.list"]
-  exportFormat  export format (xml, json, none)                [default: "none"]
-
-Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
-```
-
-- Example get all contacts
+ -  get all contacts
 ```
 e3372h_320 contacts
 ```
@@ -124,7 +91,16 @@ Result:
 MessageId: 40004 Phone: +22222222222 lastMessage: {}
 MessageId: 40005 Phone: +11111111111 lastMessage: "Test message"
 ```
-- Example get all contacts and export as xml
+ -  get all contacts with 
+```
+e3372h_320 contacts with enabled "Password required" --password="YOUR_PASSWORD"
+```
+Result:
+```
+MessageId: 40004 Phone: +22222222222 lastMessage: {}
+MessageId: 40005 Phone: +11111111111 lastMessage: "Test message"
+```
+-  get all contacts and export as xml
 ```
 ./e3372h_320 contacts --exportFormat=xml --exportFile='./contacts.xml'
 cat ./contacts.xml
