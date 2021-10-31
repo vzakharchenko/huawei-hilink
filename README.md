@@ -8,11 +8,11 @@
 
 
 # Features
-- can encrypt/decrypt huawei hilink-api
-- support "device login password"
-- can read and send SMS messages from the command line
-- reconnect network
-- on/off mobile data
+- [can encrypt/decrypt huawei hilink-api](#encryptdecrypt-hilink-api)
+- [support "device login password"](#device-login-password-page)
+- can [read](#list-sms-for-the-specific-phone) and [send](#send-sms) SMS messages from the command line
+- [reconnect network](#mobiledata)
+- [on/off mobile data](#mobiledata)
 
 # Tested on
 E3372h-320
