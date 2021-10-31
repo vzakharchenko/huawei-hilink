@@ -336,15 +336,18 @@ huawei-hilink deleteSMS  --messageId=40005 --password="YOUR_PASSWORD"
 ### mobileData
 
 -  disable mobile data
+![](./docs/mobiledata1.png)
 ```
 huawei-hilink mobileData --mode=on --password="YOUR_PASSWORD"
 ```
 
 - Example enable mobile data
+![](./docs/mobiledata2.png)
 ```
 huawei-hilink mobileData --mode=off --password="YOUR_PASSWORD"
 ```
 - Example reconnect
+![](./docs/mobiledata3.png)
 ```
 huawei-hilink mobileData --mode=reconnect  --password="YOUR_PASSWORD"
 ```
