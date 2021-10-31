@@ -1,13 +1,13 @@
 {
   "name": "huawei-hilink",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "huawei-hilink client",
   "main": "index.js",
   "scripts": {
     "sendSMS": "node index.js sendSMS  --phone=+11111111111 --message=test123 --url=192.168.89.1 --password=testPassword ",
     "contacts": "node index.js contacts --url=192.168.89.1 --password=testPassword",
     "getContactsCount": "node index.js contactPages --url=192.168.89.1 --exportFormat=json --password=testPassword",
-    "sms": "node index.js sms  --phone=+380674819807 --url=192.168.89.1 --page=1 --password=testPassword",
+    "sms": "node index.js sms  --phone=+11111111111 --url=192.168.89.1 --page=1 --password=testPassword",
     "pages": "node index.js pages  --phone=+11111111111 --url=192.168.89.1  --exportFormat=json --password=testPassword",
     "enableData": "node index.js mobileData --mode=on --url=192.168.89.1 --password=testPassword",
     "disableData": "node index.js  mobileData --mode=off --url=192.168.89.1 --password=testPassword",

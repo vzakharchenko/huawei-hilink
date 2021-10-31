@@ -82,7 +82,7 @@ export async function getContactSMSPages(sessionData: SessionData,
   const resp = await restCalls.sendDataRaw(`http://${sessionData.url}/api/sms/sms-count-contact`, 'POST', data, await getSessionHeaders(sessionData.url));
   huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
   const json = await parser.parseStringPromise(resp.data);
-  let number = Math.floor(json.response.count / 21);
+  let number = Math.ceil(json.response.count / 21);
   if (number > 0) {
     number += 1;
   }
@@ -108,7 +108,7 @@ export async function getSMSPages(sessionData: SessionData,
     Cookie: `SessionId=${sessionData.SesInfo}`,
   });
   const json = await parser.parseStringPromise(resp);
-  const number = Math.floor((json.response.LocalInbox[0] + json.response.LocalOutbox[0]) / 21) + 1;
+  const number = Math.ceil((json.response.LocalInbox[0] + json.response.LocalOutbox[0]) / 21);
   if (exportFormat !== 'hide') {
     if (exportFormat === 'xml') {
       await saveFile(exportFile, resp);

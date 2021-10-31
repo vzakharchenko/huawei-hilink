@@ -8,6 +8,7 @@
 
 
 # Features
+- can encrypt/decrypt huawei hilink-api
 - support "device login password"
 - can read and send SMS messages from the command line
 - reconnect network
@@ -44,8 +45,24 @@ add argument **--password="YOUR_PASSWORD"** to command line.
 huawei-hilink sendSMS  --phone=+11111111111 --message="Test message" --password="YOUR_PASSWORD"
 ```
 
+## supported encrypt/decrypt  hilink api
+[Login API](https://github.com/vzakharchenko/huawei-hilink/blob/fa3d36e4df622999c674f39342bb196500208d8b/src/startSession.ts#L57):
+- http://${MODEM_API}/api/webserver/token
+- http://${MODEM_API}/api/user/challenge_login
+- http://${MODEM_API}/api/user/authentication_login
+Encrypted API:
+- http://${MODEM_API}/api/sms/sms-list-phone
+- http://${MODEM_API}/api/sms/sms-count-contact
+- http://${MODEM_API}/api/sms/sms-count-contact
+- http://${MODEM_API}/api/sms/delete-sms
+- http://${MODEM_API}/api/sms/send-sms
+- http://${MODEM_API}/api/sms/sms-list-contact
+- http://${MODEM_API}/api/dialup/mobile-dataswitch
+- http://${MODEM_API}/api/net/reconnect
 
-
+example how to encrypt/decrypt API
+```
+```
 ## How to use
 
 ### Help
