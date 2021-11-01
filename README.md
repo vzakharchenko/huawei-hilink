@@ -513,7 +513,7 @@ huawei-hilink changeLteBand --url=192.168.89.1 --band=7
 - http://${MODEM_API}/api/dialup/mobile-dataswitch
 - http://${MODEM_API}/api/net/reconnect
 
-example how to encrypt/decrypt API
+## example how to encrypt/decrypt API
 ```
     const scram = huawei.CryptoJS.SCRAM();
     const smsNonce = scram.nonce().toString();
