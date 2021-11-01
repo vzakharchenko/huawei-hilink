@@ -499,14 +499,14 @@ huawei-hilink changeLteBand --url=192.168.89.1 --band=7
 ```
 
 #  encrypt/decrypt hilink api
-[Login API](https://github.com/vzakharchenko/huawei-hilink/blob/fa3d36e4df622999c674f39342bb196500208d8b/src/startSession.ts#L57):
+## [Login API](https://github.com/vzakharchenko/huawei-hilink/blob/fa3d36e4df622999c674f39342bb196500208d8b/src/startSession.ts#L57):
 - http://${MODEM_API}/api/webserver/token
 - http://${MODEM_API}/api/user/challenge_login
 - http://${MODEM_API}/api/user/authentication_login
-Encrypted/Decrypted API:
+## Encrypted/Decrypted API:
 - http://${MODEM_API}/api/sms/sms-list-phone
 - http://${MODEM_API}/api/sms/sms-list-contact
-Only Encrypted API:
+## Only Encrypted API:
 - http://${MODEM_API}/api/sms/sms-count-contact
 - http://${MODEM_API}/api/sms/delete-sms
 - http://${MODEM_API}/api/sms/send-sms
