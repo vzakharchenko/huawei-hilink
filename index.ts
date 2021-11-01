@@ -11,7 +11,13 @@ import {
     sendMessage
 } from "./src/ListSMS";
 import {controlMobileData, reconnect, status} from "./src/MobileData";
+import {getSignalInfo, lteBand} from "./src/Signal";
+
 const huawei = require('./jslib/public');
+
+async function delay(ms: number) {
+    return new Promise(res => setTimeout(res, ms));
+}
 
 // @ts-ignore
 yargs(hideBin(process.argv))
@@ -37,7 +43,7 @@ yargs(hideBin(process.argv))
                 type: "string",
             })
     }, async (argv) => {
-        huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+        huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
         await login(argv.url, argv.username, argv.password);
         try {
             const sessionData = await startSession(argv.url);
@@ -51,7 +57,7 @@ yargs(hideBin(process.argv))
         }
     }).command('contacts', 'get contact list with the latest sms messages', (yargs) => {
     // @ts-ignore
-        return yargs
+    return yargs
         .positional('url', {
             describe: 'huawei host',
             default: '192.168.8.1'
@@ -74,8 +80,8 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
-        await login(argv.url, argv.username, argv.password);
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
+    await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
         switch (argv.exportFormat) {
@@ -162,7 +168,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -216,7 +222,7 @@ yargs(hideBin(process.argv))
             default: false
         })
 }, async (argv) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -266,7 +272,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -310,7 +316,7 @@ yargs(hideBin(process.argv))
             type: 'string'
         })
 }, async (argv: any) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -338,7 +344,7 @@ yargs(hideBin(process.argv))
             describe: 'change mobile data to on,off or reconnect',
         })
 }, async (argv: any) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -382,7 +388,7 @@ yargs(hideBin(process.argv))
             default: 'none'
         })
 }, async (argv: any) => {
-    huawei.publicKey.rsapadingtype=argv.rsapadingtype||"1";
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
     await login(argv.url, argv.username, argv.password);
     try {
         const sessionData = await startSession(argv.url);
@@ -404,10 +410,73 @@ yargs(hideBin(process.argv))
     } finally {
         await logout(argv.url);
     }
+}).command('signalInfo', 'current device signal status', (yargs: any) => {
+// @ts-ignore
+    return yargs
+        .positional('url', {
+            describe: 'huawei host',
+            default: '192.168.8.1'
+        }).positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
+        }).positional('turn', {
+            alias: 't',
+            describe: 'Request Signal info until interrupted',
+            default: false,
+        })
+}, async (argv: any) => {
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
+    await login(argv.url, argv.username, argv.password);
+    try {
+        const sessionData = await startSession(argv.url);
+        if (argv.turn) {
+            while (true) {
+                await getSignalInfo(sessionData);
+                await delay(2500)
+            }
+        } else {
+            await getSignalInfo(sessionData);
+        }
+    } finally {
+        await logout(argv.url);
+    }
+}).command('changeLteBand', 'change LTE band', (yargs: any) => {
+// @ts-ignore
+    return yargs
+        .positional('url', {
+            describe: 'huawei host',
+            default: '192.168.8.1'
+        }).positional('username', {
+            describe: 'huawei username',
+            default: 'admin'
+        })
+        .positional('password', {
+            describe: 'huawei password',
+            type: 'string'
+        }).positional('band', {
+            alias: 'band',
+            describe: 'desirable LTE band number, separated by + char (example 1+3+20).If you want to use every supported bands, write \'AUTO\'.", "AUTO"',
+            default: 'AUTO',
+        })
+}, async (argv: any) => {
+    if (!argv.band){
+        throw new Error('Band is empty')
+    }
+    huawei.publicKey.rsapadingtype = argv.rsapadingtype || "1";
+    await login(argv.url, argv.username, argv.password);
+    try {
+       await lteBand(await startSession(argv.url),argv.band);
+    } finally {
+        await logout(argv.url);
+    }
 })
     .option('rsapadingtype', {
         type: 'string',
         description: 'rsapadingtype, to check your run in web-console: MUI.LoginStateController.rsapadingtype',
-        default:'1'
+        default: '1'
     })
     .parse()

@@ -48,7 +48,7 @@ export async function logout(url: string) {
     huawei.publicSession.token2 = resp.headers.__requestverificationtoken;
     const message = await parser.parseStringPromise(resp.data);
     if (message.response !== 'OK') {
-      throw new Error(`Logout error: ${resp}`);
+      throw new Error(`Logout error: ${resp.data}`);
     }
   }
 }

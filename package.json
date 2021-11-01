@@ -1,6 +1,6 @@
 {
   "name": "huawei-hilink",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "huawei-hilink client",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,9 @@
     "reconnected": "node index.js  mobileData --mode=reconnect --url=192.168.89.1 --password=testPassword",
     "monitoring": "node index.js monitoring --url=192.168.89.1 --password=testPassword",
     "messages": "node index.js messages --url=192.168.89.1 --deleteAfter=true --password=testPassword",
+    "signalInfo": "node index.js signalInfo --url=192.168.89.1 --password=testPassword",
+    "signalInfoLoop": "node index.js signalInfo --turn=true --url=192.168.89.1 --password=testPassword",
+    "changeLteBand": "node index.js changeLteBand --url=192.168.89.1 --band=\"AUTO\" --password=testPassword",
     "lint": "eslint src --ext .ts src",
     "build": "tsc --build",
     "lint:fix": "eslint --fix src --ext .ts"
