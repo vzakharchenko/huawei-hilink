@@ -13,6 +13,8 @@
 - can [read](#list-sms-for-the-specific-phone) and [send](#send-sms) SMS messages from the command line
 - [reconnect network](#mobiledata)
 - [on/off mobile data](#mobiledata)
+- [get supported LTE Band and mobile connection status](#get-current-lte-band-and-mobile-connection-status-until-interrupted)
+- [change/set LTE Band(s)](#set-lte-band-to-b3b7b8)
 
 # Tested on
 E3372h-320
