@@ -57,19 +57,23 @@ result:
 huawei-hilink [command]
 
 Commands:
-  huawei-hilink sendSMS       send SMS to contact or group of contacts
-  huawei-hilink contacts      get contact list with the latest sms messages
-  huawei-hilink messages      get all messages from InBox
-  huawei-hilink contactPages  contact list pages
-  huawei-hilink sms           get contact SMS list
-  huawei-hilink pages         count of sms pages
-  huawei-hilink deleteSMS     delete sms by smsId
-  huawei-hilink mobileData    Enable/Disable or Reconnect Mobile Data
-  huawei-hilink monitoring    current Monitoring status
+  huawei-hilink sendSMS        send SMS to contact or group of contacts
+  huawei-hilink contacts       get contact list with the latest sms messages
+  huawei-hilink messages       get all messages from InBox
+  huawei-hilink contactPages   contact list pages
+  huawei-hilink sms            get contact SMS list
+  huawei-hilink pages          count of sms pages
+  huawei-hilink deleteSMS      delete sms by smsId
+  huawei-hilink mobileData     Enable/Disable or Reconnect Mobile Data
+  huawei-hilink monitoring     current Monitoring status
+  huawei-hilink signalInfo     current device signal status
+  huawei-hilink changeLteBand  change LTE band
 
 Options:
-  --help     Show help                                                 [boolean]
-  --version  Show version number                                       [boolean]
+  --help           Show help                                           [boolean]
+  --version        Show version number                                 [boolean]
+  --rsapadingtype  rsapadingtype, to check your run in web-console:
+                   MUI.LoginStateController.rsapadingtype[string] [default: "1"]
 
 ```
 ### Version
@@ -450,7 +454,7 @@ Result:
 ```
 
 
-
+# get Current Network
 
 #  encrypt/decrypt hilink api
 [Login API](https://github.com/vzakharchenko/huawei-hilink/blob/fa3d36e4df622999c674f39342bb196500208d8b/src/startSession.ts#L57):

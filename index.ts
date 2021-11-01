@@ -461,6 +461,7 @@ yargs(hideBin(process.argv))
             alias: 'band',
             describe: 'desirable LTE band number, separated by + char (example 1+3+20).If you want to use every supported bands, write \'AUTO\'.", "AUTO"',
             default: 'AUTO',
+            type:'string'
         })
 }, async (argv: any) => {
     if (!argv.band){

@@ -8,21 +8,29 @@ const huawei = require('../jslib/public');
 
 function _4GType(data:string):string {
   if ((data === '20880800C5') || (data === '20000800C5')) { return "AUTO"; }
-  let dataOut = "";
+  const dataOut:string[] = [];
   if ((parseInt(data, 16) & 0x1) === 0x1) {
-    dataOut = "B1+";
+    dataOut.push("B1");
   }
   if ((parseInt(data, 16) & 0x4) === 0x4) {
-    dataOut += "B3+";
+    dataOut.push("B3");
+  }
+  if ((parseInt(data, 16) & 0x10) === 0x10) {
+    dataOut.push("B5");
   }
   if ((parseInt(data, 16) & 0x40) === 0x40) {
-    dataOut += "B7+";
+    dataOut.push("B7");
+  }
+  if ((parseInt(data, 16) & 0x80) === 0x80) {
+    dataOut.push("B8");
   }
   if ((parseInt(data, 16) & 0x80000) === 0x80000) {
-    dataOut += "B20";
+    dataOut.push("B20");
   }
-  dataOut = dataOut.replace(/\++$/, "");
-  return dataOut;
+  if ((parseInt(data, 16) & 0x8000000) === 0x8000000) {
+    dataOut.push("B28");
+  }
+  return  dataOut.join('+');
 }
 
 export async function getSignalInfo(sessionData: SessionData) {
