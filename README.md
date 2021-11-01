@@ -454,7 +454,47 @@ Result:
 ```
 
 
-# get Current Network
+# get Current LTE Band and mobile connection status
+
+```
+huawei-hilink signalInfo --url=192.168.89.1
+```
+Result
+```
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -81dBm rsrp: -114dBm rsrq: -15.0dB sinr: -7dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+```
+
+# get Current LTE Band and mobile connection status until interrupted
+
+```
+huawei-hilink signalInfo -turn=true --url=192.168.89.1
+```
+```
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -79dBm rsrp: -113dBm rsrq: -15.0dB sinr: -9dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -79dBm rsrp: -113dBm rsrq: -15.0dB sinr: -9dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -69dBm rsrp: -97dBm rsrq: -9.0dB sinr: 12dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -75dBm rsrp: -102dBm rsrq: -9.0dB sinr: 0dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -75dBm rsrp: -102dBm rsrq: -9.0dB sinr: 0dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -75dBm rsrp: -102dBm rsrq: -9.0dB sinr: 0dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+LTE Band: B1+B3+B7+B8+B20+B28 rssi: -73dBm rsrp: -104dBm rsrq: -12.0dB sinr: -4dB dlbandwidth: 15MHz ulbandwidth: 15MHz band: 7 cell_id: 42181419 plmn: 25503
+```
+
+# Change LTE Band to Auto
+```
+huawei-hilink changeLteBand --url=192.168.89.1 --band=AUTO
+```
+# Set LTE Band to B3+B7+B8
+```
+huawei-hilink changeLteBand --url=192.168.89.1 --band="3+7+8"
+```
+# Set LTE Band to  B1+B3+B7+B8+B20+B28
+```
+huawei-hilink changeLteBand --url=192.168.89.1 --band="1+3+7+8+20+28"
+```
+# Set LTE Band to  B7
+```
+huawei-hilink changeLteBand --url=192.168.89.1 --band=7
+```
 
 #  encrypt/decrypt hilink api
 [Login API](https://github.com/vzakharchenko/huawei-hilink/blob/fa3d36e4df622999c674f39342bb196500208d8b/src/startSession.ts#L57):
