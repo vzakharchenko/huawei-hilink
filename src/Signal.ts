@@ -30,7 +30,7 @@ function _4GType(data:string):string {
   if ((parseInt(data, 16) & 0x8000000) === 0x8000000) {
     dataOut.push("B28");
   }
-  return  dataOut.join('+');
+  return dataOut.join('+');
 }
 
 export async function getSignalInfo(sessionData: SessionData) {
