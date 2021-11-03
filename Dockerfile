@@ -6,7 +6,7 @@ LABEL name="huawei-hilink"
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y nodejs npm
 # Bundle APP files
-RUN npm i huawei-hilink@1.1.6 -g
+RUN npm i huawei-hilink@1.1.7 -g
 # Install app dependencies
 ENV NPM_CONFIG_LOGLEVEL warn
 ENTRYPOINT ["/usr/local/bin/huawei-hilink"]

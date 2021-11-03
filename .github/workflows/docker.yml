@@ -33,5 +33,5 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/386,linux/arm/v7
           push: true
           tags: |
-            vassio/huawei-hilink:1.1.6
+            vassio/huawei-hilink:1.1.7
             vassio/huawei-hilink:latest
