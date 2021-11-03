@@ -1,6 +1,6 @@
 {
   "name": "huawei-hilink",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "huawei-hilink client",
   "main": "index.js",
   "scripts": {
@@ -34,11 +34,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vzakharchenko/E3372h-320-cli.git"
+    "url": "git+https://github.com/vzakharchenko/huawei-hilink.git"
   },
   "keywords": [
     "huawei",
     "e3372h-320",
+    "huawei-hilink",
+    "encrypt",
+    "decrypt",
+    "decrypt",
+    "LTE Band",
     "client",
     "rest-api",
     "publicKey"
