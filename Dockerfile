@@ -9,4 +9,5 @@ RUN apt-get update && apt-get install -y nodejs npm
 RUN npm i huawei-hilink@1.1.5 -g
 # Install app dependencies
 ENV NPM_CONFIG_LOGLEVEL warn
-CMD [ "/usr/local/bin/huawei-hilink"]
+ENTRYPOINT ["/usr/local/bin/huawei-hilink"]
+CMD []

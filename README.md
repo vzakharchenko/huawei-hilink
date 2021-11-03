@@ -34,7 +34,17 @@ sudo npm i huawei-hilink -g
 ```
 
 ## Docker installation
-TODO
+```
+docker run vassio/huawei-hilink --help
+```
+
+```
+docker run vassio/huawei-hilink sendSMS  --phone=+11111111111 --message="Test message"
+```
+
+```
+docker run vassio/huawei-hilink huawei-hilink contacts
+```
 
 ## Device Login password Page
 

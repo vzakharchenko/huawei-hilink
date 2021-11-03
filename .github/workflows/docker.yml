@@ -30,7 +30,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/386,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/386,linux/arm/v7
           push: true
           tags: |
             vassio/huawei-hilink:1.1.5
