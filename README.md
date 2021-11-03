@@ -25,15 +25,8 @@ Web UI version WEBUI 11.0.1.1(W13SP2C7201)
 ![](./docs/info.png)
 ![](./docs/info2.png)
 
-## Requirement
- - nodejs (>12)
-## Installation
-- install package
-```
-sudo npm i huawei-hilink -g
-```
 
-## Docker installation
+## Docker
 ```
 docker run vassio/huawei-hilink --help
 ```
@@ -44,6 +37,14 @@ docker run vassio/huawei-hilink sendSMS  --phone=+11111111111 --message="Test me
 
 ```
 docker run vassio/huawei-hilink huawei-hilink contacts
+```
+
+## Requirement
+ - nodejs (>12)
+## Installation
+- install package
+```
+sudo npm i huawei-hilink -g
 ```
 
 ## Device Login password Page
